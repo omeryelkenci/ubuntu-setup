@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Contributing guide
+    url: https://github.com/omeryelkenci/ubuntu-setup/blob/main/CONTRIBUTING.md
+    about: What kinds of changes are welcome and how to send them.

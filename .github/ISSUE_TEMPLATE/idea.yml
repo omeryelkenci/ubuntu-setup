@@ -1,0 +1,29 @@
+name: Idea or suggestion
+description: Suggest a tool, setting or improvement before opening a pull request.
+title: "[Idea]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is a personal setup, so changes to personal choices (theme, shortcuts, which extensions I use) are best made in your own fork. Fixes, version updates and useful additions are welcome here.
+  - type: textarea
+    id: idea
+    attributes:
+      label: What do you suggest?
+      description: The tool, setting or change, and what it does.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why is it useful?
+      description: What problem does it solve, or what does it make easier?
+    validations:
+      required: true
+  - type: textarea
+    id: how
+    attributes:
+      label: How to set it up
+      description: Optional. Install commands or settings, if you already know them.
+      render: bash

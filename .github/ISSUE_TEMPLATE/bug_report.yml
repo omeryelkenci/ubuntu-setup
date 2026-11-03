@@ -1,0 +1,58 @@
+name: Something doesn't work
+description: A command fails, a package was renamed, a link is broken, or a step is wrong.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! Please don't paste passwords, tokens or other private data in the output.
+  - type: input
+    id: ubuntu
+    attributes:
+      label: Ubuntu version
+      description: Output of `lsb_release -d`
+      placeholder: Ubuntu 26.04 LTS
+    validations:
+      required: true
+  - type: input
+    id: gnome
+    attributes:
+      label: GNOME version
+      description: Output of `gnome-shell --version`. Leave empty for terminal-only problems.
+      placeholder: GNOME Shell 50.1
+  - type: dropdown
+    id: section
+    attributes:
+      label: README section
+      options:
+        - 1. Terminal
+        - 2. Desktop (GNOME)
+        - 3. System snapshots (Timeshift)
+        - 4. Home folder backups
+        - 5. Before reinstalling
+        - Cheatsheet
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: step
+    attributes:
+      label: The step you ran
+      description: Paste the command or describe the step.
+      render: bash
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: What happened
+      description: The full error output, or what you saw instead of what you expected.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: fix
+    attributes:
+      label: Fix, if you know one
+      description: Optional. A command or change that worked for you.
