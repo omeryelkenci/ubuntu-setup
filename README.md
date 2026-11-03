@@ -8,7 +8,12 @@ Backed-up config files in `configs/`:
 - `tools.zsh` — aliases and settings for zoxide, eza, bat, fd, fzf, lazygit
 - `p10k.zsh` — my Powerlevel10k prompt style (from `p10k configure`)
 
-> Keep this folder somewhere that survives a reinstall: a git repo, cloud drive or USB stick.
+On a new machine, get this folder first:
+```bash
+sudo apt install -y git
+git clone https://github.com/omeryelkenci/ubuntu-setup.git ~/Projects/system-setup
+cd ~/Projects/system-setup
+```
 
 ---
 
@@ -227,6 +232,7 @@ If I change my prompt or aliases, copy the latest versions here first:
 ```bash
 cp ~/.oh-my-zsh/custom/tools.zsh configs/tools.zsh
 cp ~/.p10k.zsh configs/p10k.zsh
+git add -A && git commit -m "Update configs" && git push
 ```
 
 Cheatsheet for daily use: open `cheatsheet.html` in a browser.
