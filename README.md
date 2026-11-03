@@ -1,5 +1,11 @@
 # New System Setup (Ubuntu + GNOME)
 
+[![Ubuntu 26.04](https://img.shields.io/badge/Ubuntu-26.04-E95420?logo=ubuntu&logoColor=white)](https://ubuntu.com/)
+[![GNOME 50](https://img.shields.io/badge/GNOME-50-4A86CF?logo=gnome&logoColor=white)](https://www.gnome.org/)
+[![Shell: zsh](https://img.shields.io/badge/shell-zsh%20%2B%20Oh%20My%20Zsh-1A2C34?logo=zsh&logoColor=white)](https://ohmyz.sh/)
+[![License: MIT](https://img.shields.io/github/license/omeryelkenci/ubuntu-setup)](LICENSE)
+[![Last commit](https://img.shields.io/github/last-commit/omeryelkenci/ubuntu-setup)](https://github.com/omeryelkenci/ubuntu-setup/commits/main)
+
 Checklist to rebuild my terminal and desktop setup on a fresh Ubuntu install.
 Made on Ubuntu 26.04 / GNOME 50. Run the steps in order, from inside this folder
 (`cd system-setup`), so the `configs/` paths resolve.
