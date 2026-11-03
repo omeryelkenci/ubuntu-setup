@@ -1,0 +1,16 @@
+# Editor and OS leftovers
+*~
+*.swp
+*.swo
+*.bak
+.directory
+.vscode/
+.idea/
+
+# Never commit secrets or machine-specific files
+.env
+.env.*
+*.key
+*.pem
+*.local
+*.local.*
