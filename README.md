@@ -6,6 +6,14 @@ Made on Ubuntu 26.04 / GNOME 50. Run the steps in order, from inside this folder
 
 **Repo:** https://github.com/omeryelkenci/ubuntu-setup
 
+The included [`cheatsheet.html`](cheatsheet.html) is a searchable, click-to-copy reference
+for everything this setup installs. Open it in any browser:
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/cheatsheet-dark.png">
+  <img alt="Ubuntu Workstation Cheatsheet: panels of commands and shortcuts for the desktop, zoxide, fzf, bat, git and more" src="docs/cheatsheet-light.png">
+</picture>
+
 Backed-up config files in `configs/`:
 - `tools.zsh` — aliases and settings for zoxide, eza, bat, fd, fzf, lazygit
 - `p10k.zsh` — my Powerlevel10k prompt style (from `p10k configure`)
