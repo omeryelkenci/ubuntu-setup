@@ -1,0 +1,390 @@
+<title>Ubuntu Workstation Cheatsheet</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: masonry-ish grid of tool panels, each a two-column table of command → meaning; sticky filter bar on top */
+:root {
+  --bg: #f3f4f7;
+  --panel: #ffffff;
+  --fg: #1d2333;
+  --muted: #5d6579;
+  --line: #dde0e8;
+  --accent: #b4540f;
+  --chip: #eceef4;
+  --code: #213a7a;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "DejaVu Sans Mono", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14171f; --panel: #1c2029; --fg: #e3e6ee; --muted: #9aa1b2;
+    --line: #2c313d; --accent: #f0a05a; --chip: #262b36; --code: #a9c1ff;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14171f; --panel: #1c2029; --fg: #e3e6ee; --muted: #9aa1b2;
+  --line: #2c313d; --accent: #f0a05a; --chip: #262b36; --code: #a9c1ff;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 14px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 48px;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.wrap { max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+header { display: flex; flex-direction: column; gap: 6px; }
+h1 { font-family: var(--display); font-size: clamp(26px, 4vw, 36px); line-height: 1.1; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+.sub { color: var(--muted); margin: 0; max-width: 68ch; }
+.sub code, td code, .note code { font-family: var(--mono); font-size: 0.92em; }
+.bar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg);
+  padding-block: 10px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+}
+.bar input {
+  flex: 1 1 260px; min-width: 0; font: inherit; font-family: var(--mono); font-size: 14px;
+  padding: 10px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--fg);
+}
+.bar input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.count { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.grid { columns: 3 340px; column-gap: 16px; }
+section {
+  break-inside: avoid; margin-bottom: 16px; background: var(--panel); border: 1px solid var(--line);
+  border-radius: 10px; padding: 14px 16px 10px; display: flex; flex-direction: column; gap: 8px; min-width: 0;
+}
+section h2 { font-family: var(--display); font-size: 18px; margin: 0; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+section h2 .tag { font-family: var(--mono); font-size: 11.5px; font-weight: 400; color: var(--muted); letter-spacing: 0.02em; }
+.desc { margin: 0; color: var(--muted); font-size: 13px; }
+table { width: 100%; border-collapse: collapse; }
+td { padding: 6px 0; vertical-align: top; border-top: 1px solid var(--line); }
+td:first-child { width: 46%; padding-right: 12px; }
+td:first-child code { color: var(--code); word-break: break-word; }
+kbd {
+  font-family: var(--mono); font-size: 12px; background: var(--chip); border: 1px solid var(--line);
+  border-bottom-width: 2px; border-radius: 5px; padding: 1px 6px; white-space: nowrap; color: var(--fg);
+}
+.copy { all: unset; cursor: pointer; border-radius: 4px; }
+.copy:hover code, .copy:focus-visible code { text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 3px; }
+.copy:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.note { font-size: 12.5px; color: var(--muted); margin: 2px 0 4px; }
+.note b { color: var(--accent); font-weight: 600; }
+.empty { color: var(--muted); padding: 24px 0; }
+.toast {
+  position: fixed; left: 50%; transform: translateX(-50%);
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  background: var(--fg); color: var(--bg); padding: 8px 14px; border-radius: 8px; font-size: 13px;
+  opacity: 0; transition: opacity .15s; pointer-events: none;
+}
+.toast.show { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .toast { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Ubuntu Workstation Cheatsheet</h1>
+    <p class="sub">Terminal, GNOME desktop and backups on Ubuntu 26.04. Click any command to copy it. Aliases live in <code>~/.oh-my-zsh/custom/tools.zsh</code>; the rebuild checklist is in <code>~/Projects/system-setup</code>.</p>
+  </header>
+
+  <div class="bar">
+    <input id="filter" type="search" placeholder="Filter… e.g. git, search, ctrl" aria-label="Filter commands" autocomplete="off">
+    <span class="count" id="count"></span>
+  </div>
+
+  <div class="grid" id="grid">
+
+    <section data-tool="desktop gnome shortcuts super windows keys">
+      <h2>Desktop <span class="tag">your custom shortcuts</span></h2>
+      <table>
+        <tr><td><kbd>Super</kbd>+<kbd>Enter</kbd></td><td>New terminal window</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>T</kbd></td><td>Terminal (Ubuntu default)</td></tr>
+        <tr><td><kbd>Super</kbd>+<kbd>E</kbd></td><td>Files, Home folder</td></tr>
+        <tr><td><kbd>Super</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd></td><td>Clipboard history</td></tr>
+      </table>
+      <p class="note">Change them in Settings → Keyboard → View and Customize Shortcuts. Clipboard history keeps 15 items; star one to pin it.</p>
+    </section>
+
+    <section data-tool="desktop gnome windows tiling workspaces super keys">
+      <h2>Windows &amp; workspaces <span class="tag">GNOME</span></h2>
+      <table>
+        <tr><td><kbd>Super</kbd></td><td>Overview: windows + search</td></tr>
+        <tr><td><kbd>Super</kbd>+<kbd>A</kbd></td><td>All apps</td></tr>
+        <tr><td><kbd>Super</kbd>+<kbd>1</kbd>…<kbd>9</kbd></td><td>Open dock app by position</td></tr>
+        <tr><td><kbd>Alt</kbd>+<kbd>Tab</kbd></td><td>Switch apps</td></tr>
+        <tr><td><kbd>Super</kbd>+<kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd></td><td>Move window to the next tile of your layout (Tiling Shell)</td></tr>
+        <tr><td>Drag window to top edge</td><td>Snap assistant: drop it onto a layout tile</td></tr>
+        <tr><td>Tiling Shell icon in top bar</td><td>Pick or edit tile layouts</td></tr>
+        <tr><td><kbd>Super</kbd>+<kbd>H</kbd></td><td>Hide window</td></tr>
+        <tr><td><kbd>Super</kbd>+<kbd>PgUp</kbd> / <kbd>PgDn</kbd></td><td>Previous / next workspace</td></tr>
+        <tr><td><kbd>Super</kbd>+<kbd>Shift</kbd>+<kbd>PgUp</kbd> / <kbd>PgDn</kbd></td><td>Move window to workspace</td></tr>
+        <tr><td><kbd>Super</kbd>+<kbd>V</kbd></td><td>Notifications &amp; calendar</td></tr>
+        <tr><td><kbd>Print</kbd></td><td>Screenshot / screen recording tool</td></tr>
+        <tr><td><kbd>Super</kbd>+<kbd>L</kbd></td><td>Lock screen</td></tr>
+      </table>
+      <p class="note">Tiling Shell replaced Ubuntu's Tiling Assistant, which is now turned off. Double-click a title bar to maximize.</p>
+    </section>
+
+    <section data-tool="timeshift snapshot restore system backup rollback">
+      <h2>Timeshift <span class="tag">system snapshots</span></h2>
+      <p class="desc">Rolls the system back after a bad update or config change. Your home folder is not included.</p>
+      <table>
+        <tr><td><code>sudo timeshift --list</code></td><td>Show snapshots</td></tr>
+        <tr><td><code>sudo timeshift --create --comments "before update"</code></td><td>Take a snapshot now</td></tr>
+        <tr><td><code>sudo timeshift --restore</code></td><td>Pick a snapshot and restore it</td></tr>
+        <tr><td><code>sudo timeshift --delete</code></td><td>Pick a snapshot to delete</td></tr>
+        <tr><td>Timeshift app</td><td>Same actions with a window: select, then Restore</td></tr>
+      </table>
+      <p class="note">Automatic: daily (keep 5), weekly (3), at boot (3). Won’t boot? Start from the Ubuntu USB, install Timeshift there and restore.</p>
+    </section>
+
+    <section data-tool="backups deja dup google drive restore files home">
+      <h2>Backups <span class="tag">home folder → Google Drive</span></h2>
+      <p class="desc">Daily, encrypted, to Drive folder <code>Backups/ubuntu-personal-laptop</code>. Skips Downloads, Trash and ~/.cache.</p>
+      <table>
+        <tr><td><code>deja-dup --backup</code></td><td>Back up now</td></tr>
+        <tr><td>Backups app → Restore</td><td>Bring back files from any date</td></tr>
+        <tr><td>Backups app → Preferences</td><td>Folders, schedule, how long to keep</td></tr>
+      </table>
+      <p class="note">Restoring needs your Google sign-in and the <b>encryption password</b>. Keep it off this laptop.</p>
+      <p class="note">Don’t move or rename the backup folder in Google Drive; Déjà Dup only sees folders it created.</p>
+    </section>
+
+    <section data-tool="backup workflow which restore timeshift backups recovery">
+      <h2>Backup workflow <span class="tag">which one to use</span></h2>
+      <p class="desc">Timeshift = the system, on this disk. Backups = your files, on Google Drive.</p>
+      <table>
+        <tr><td>Update broke something</td><td><b>Timeshift</b>: pick a snapshot from before → Restore → reboot</td></tr>
+        <tr><td>Ubuntu won’t boot</td><td><b>Timeshift</b> from the Ubuntu USB live session</td></tr>
+        <tr><td>Deleted or overwrote a file</td><td><b>Backups</b> → Restore → pick a date</td></tr>
+        <tr><td>Broke a config like ~/.zshrc</td><td><b>Backups</b>, or the copies in ~/Projects/system-setup/configs</td></tr>
+        <tr><td>Laptop lost or disk dead</td><td>New install → <b>Backups</b> → Restore → follow system-setup/README.md</td></tr>
+      </table>
+      <p class="note"><b>Habits:</b> snapshot before risky changes · monthly, check “Last backup” and restore one test file · keep important files out of Downloads.</p>
+      <p class="note">Timeshift restores never touch your home folder. Backups skip days on metered connections or in power-saver mode.</p>
+    </section>
+
+    <section data-tool="zoxide z jump cd directory">
+      <h2>zoxide <span class="tag">smart cd</span></h2>
+      <p class="desc">Learns the folders you visit. Match any part of the path.</p>
+      <table>
+        <tr><td><code>z proj</code></td><td>Jump to best match for "proj"</td></tr>
+        <tr><td><code>z api src</code></td><td>Match several words, in order</td></tr>
+        <tr><td><code>z -</code></td><td>Back to the previous folder</td></tr>
+        <tr><td><code>zi</code></td><td>Pick from all known folders with fzf</td></tr>
+        <tr><td><code>z proj</code> <kbd>Space</kbd><kbd>Tab</kbd></td><td>Show matches before jumping</td></tr>
+        <tr><td><code>zoxide query -l</code></td><td>List what it has learned</td></tr>
+        <tr><td><code>zoxide remove ~/old</code></td><td>Forget a folder</td></tr>
+      </table>
+      <p class="note">It never jumps to the folder you are already in. New folders are learned the first time you <code>cd</code> into them.</p>
+    </section>
+
+    <section data-tool="fzf fuzzy finder keys search history files">
+      <h2>fzf <span class="tag">fuzzy finder</span></h2>
+      <p class="desc">Works anywhere in the prompt.</p>
+      <table>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>R</kbd></td><td>Search command history</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>T</kbd></td><td>Insert file path (with preview)</td></tr>
+        <tr><td><kbd>Alt</kbd>+<kbd>C</kbd></td><td>cd into a folder (tree preview)</td></tr>
+        <tr><td><code>vim **</code><kbd>Tab</kbd></td><td>Fuzzy-complete paths for any command</td></tr>
+        <tr><td><code>kill -9 **</code><kbd>Tab</kbd></td><td>Pick a process to kill</td></tr>
+        <tr><td><code>vim $(fzf)</code></td><td>Open a picked file</td></tr>
+      </table>
+      <p class="note"><b>Inside fzf:</b> <kbd>Tab</kbd> multi-select · <kbd>Ctrl</kbd>+<kbd>J</kbd>/<kbd>K</kbd> move · <kbd>Esc</kbd> cancel</p>
+      <table>
+        <tr><td><code>'word</code></td><td>Exact match</td></tr>
+        <tr><td><code>^src</code> · <code>.py$</code></td><td>Starts with · ends with</td></tr>
+        <tr><td><code>!test</code></td><td>Exclude</td></tr>
+        <tr><td><code>py | rs</code></td><td>Either one</td></tr>
+      </table>
+    </section>
+
+    <section data-tool="ripgrep rg search grep text code">
+      <h2>ripgrep <span class="tag">rg · search text</span></h2>
+      <p class="desc">Recursive by default, skips .gitignore'd and hidden files.</p>
+      <table>
+        <tr><td><code>rg TODO</code></td><td>Search current folder</td></tr>
+        <tr><td><code>rg -i error</code></td><td>Ignore case</td></tr>
+        <tr><td><code>rg -w id</code></td><td>Whole word only</td></tr>
+        <tr><td><code>rg -F 'a.b('</code></td><td>Literal text, no regex</td></tr>
+        <tr><td><code>rg -t py import</code></td><td>Only Python files</td></tr>
+        <tr><td><code>rg -g '*.ts' fetch</code></td><td>Only files matching a glob</td></tr>
+        <tr><td><code>rg -l token</code></td><td>Only list file names</td></tr>
+        <tr><td><code>rg -C 3 panic</code></td><td>3 lines of context</td></tr>
+        <tr><td><code>rg --hidden secret</code></td><td>Include hidden files</td></tr>
+      </table>
+    </section>
+
+    <section data-tool="fd find files search">
+      <h2>fd <span class="tag">find files</span></h2>
+      <p class="desc">Alias for <code>fdfind</code>. Also skips ignored and hidden files.</p>
+      <table>
+        <tr><td><code>fd config</code></td><td>Files/folders with "config" in the name</td></tr>
+        <tr><td><code>fd -e md</code></td><td>By extension</td></tr>
+        <tr><td><code>fd -t d node</code></td><td>Folders only (<code>-t f</code> files)</td></tr>
+        <tr><td><code>fd -H env</code></td><td>Include hidden files</td></tr>
+        <tr><td><code>fd log ~/Downloads</code></td><td>Search another folder</td></tr>
+        <tr><td><code>fd -e jpg -x mogrify {}</code></td><td>Run a command on each result</td></tr>
+      </table>
+    </section>
+
+    <section data-tool="eza ls list files tree">
+      <h2>eza <span class="tag">ls replacement</span></h2>
+      <table>
+        <tr><td><code>ls</code></td><td>List, folders first</td></tr>
+        <tr><td><code>ll</code></td><td>Long list with git status</td></tr>
+        <tr><td><code>la</code></td><td>Long list including hidden</td></tr>
+        <tr><td><code>lt</code></td><td>Tree, 2 levels deep</td></tr>
+        <tr><td><code>eza -T -L 4</code></td><td>Tree, 4 levels deep</td></tr>
+        <tr><td><code>ll -s modified</code></td><td>Sort by date (newest last)</td></tr>
+      </table>
+    </section>
+
+    <section data-tool="bat cat view file syntax">
+      <h2>bat <span class="tag">cat replacement</span></h2>
+      <table>
+        <tr><td><code>cat file.py</code></td><td>Print with syntax colors</td></tr>
+        <tr><td><code>bat file.py</code></td><td>Scrollable view with line numbers</td></tr>
+        <tr><td><code>bat -r 40:60 app.js</code></td><td>Only lines 40–60</td></tr>
+        <tr><td><code>bat -A file</code></td><td>Show tabs, spaces, line endings</td></tr>
+        <tr><td><code>curl … | bat -l json</code></td><td>Highlight piped input</td></tr>
+        <tr><td><code>\cat file</code></td><td>The original cat (for scripts)</td></tr>
+      </table>
+      <p class="note">In the scroll view: <kbd>/</kbd> search · <kbd>q</kbd> quit</p>
+    </section>
+
+    <section data-tool="git delta diff log">
+      <h2>git + delta <span class="tag">diffs</span></h2>
+      <p class="desc">Delta formats every git diff automatically.</p>
+      <table>
+        <tr><td><code>git diff</code></td><td>Unstaged changes</td></tr>
+        <tr><td><code>git diff --staged</code></td><td>What will be committed</td></tr>
+        <tr><td><code>git show</code></td><td>Last commit</td></tr>
+        <tr><td><code>git log -p</code></td><td>History with diffs</td></tr>
+        <tr><td><code>git add -p</code></td><td>Stage piece by piece</td></tr>
+      </table>
+      <p class="note">In the diff view: <kbd>n</kbd>/<kbd>N</kbd> next/previous file · <kbd>q</kbd> quit</p>
+    </section>
+
+    <section data-tool="git aliases oh my zsh plugin gst">
+      <h2>Git aliases <span class="tag">Oh My Zsh git plugin</span></h2>
+      <table>
+        <tr><td><code>gst</code></td><td>git status</td></tr>
+        <tr><td><code>ga file</code> · <code>gaa</code></td><td>Add a file · add everything</td></tr>
+        <tr><td><code>gcmsg "msg"</code></td><td>Commit with message</td></tr>
+        <tr><td><code>gd</code></td><td>git diff</td></tr>
+        <tr><td><code>gl</code> · <code>gp</code></td><td>Pull · push</td></tr>
+        <tr><td><code>gsw main</code></td><td>Switch branch</td></tr>
+        <tr><td><code>gcb feature</code></td><td>Create and check out branch</td></tr>
+        <tr><td><code>glo</code></td><td>One-line log</td></tr>
+        <tr><td><code>alias | rg '^g'</code></td><td>See all git aliases</td></tr>
+      </table>
+    </section>
+
+    <section data-tool="lazygit lg git ui">
+      <h2>lazygit <span class="tag">lg · git UI</span></h2>
+      <table>
+        <tr><td><code>lg</code></td><td>Open in the current repo</td></tr>
+        <tr><td><kbd>1</kbd>–<kbd>5</kbd> · <kbd>Tab</kbd></td><td>Switch panel</td></tr>
+        <tr><td><kbd>Space</kbd></td><td>Stage / unstage file</td></tr>
+        <tr><td><kbd>a</kbd></td><td>Stage all</td></tr>
+        <tr><td><kbd>Enter</kbd></td><td>Open file to stage single lines</td></tr>
+        <tr><td><kbd>c</kbd></td><td>Commit</td></tr>
+        <tr><td><kbd>p</kbd> · <kbd>P</kbd></td><td>Pull · push</td></tr>
+        <tr><td><kbd>z</kbd></td><td>Undo</td></tr>
+        <tr><td><kbd>?</kbd></td><td>All keys for this panel</td></tr>
+        <tr><td><kbd>q</kbd></td><td>Quit</td></tr>
+      </table>
+    </section>
+
+    <section data-tool="zsh autosuggestions syntax highlighting shell oh my zsh">
+      <h2>zsh <span class="tag">shell</span></h2>
+      <table>
+        <tr><td><kbd>→</kbd> or <kbd>End</kbd></td><td>Accept grey suggestion</td></tr>
+        <tr><td><kbd>Alt</kbd>+<kbd>F</kbd></td><td>Accept next word of it</td></tr>
+        <tr><td>Green / red command</td><td>Exists / not found</td></tr>
+        <tr><td><kbd>Tab</kbd> <kbd>Tab</kbd></td><td>Menu of completions</td></tr>
+        <tr><td><code>..</code> · <code>...</code></td><td>Up one · two folders</td></tr>
+        <tr><td><code>d</code> then a number</td><td>Recent folders list, jump by number</td></tr>
+        <tr><td><code>exec zsh</code></td><td>Reload after editing config</td></tr>
+        <tr><td><code>omz update</code></td><td>Update Oh My Zsh</td></tr>
+      </table>
+    </section>
+
+    <section data-tool="tldr help man examples">
+      <h2>tldr <span class="tag">quick help</span></h2>
+      <table>
+        <tr><td><code>tldr tar</code></td><td>Practical examples for a command</td></tr>
+        <tr><td><code>tldr git rebase</code></td><td>Subcommands too</td></tr>
+        <tr><td><code>tldr --list</code></td><td>All available pages</td></tr>
+        <tr><td><code>tldr --update</code></td><td>Refresh the pages</td></tr>
+      </table>
+    </section>
+
+    <section data-tool="btop monitor process cpu memory">
+      <h2>btop <span class="tag">system monitor</span></h2>
+      <table>
+        <tr><td><code>btop</code></td><td>Open</td></tr>
+        <tr><td><kbd>↑</kbd> <kbd>↓</kbd></td><td>Select a process</td></tr>
+        <tr><td><kbd>f</kbd></td><td>Filter processes by name</td></tr>
+        <tr><td><kbd>e</kbd></td><td>Toggle tree view</td></tr>
+        <tr><td><kbd>k</kbd></td><td>Kill selected process</td></tr>
+        <tr><td><kbd>Esc</kbd> · <kbd>q</kbd></td><td>Menu · quit</td></tr>
+      </table>
+    </section>
+
+  </div>
+  <p class="empty" id="empty" hidden>No commands match. Try a tool name like <code>rg</code> or a key like <code>ctrl</code>.</p>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  const toast = document.getElementById('toast');
+  let t;
+  const show = (msg) => { toast.textContent = msg; toast.classList.add('show'); clearTimeout(t); t = setTimeout(() => toast.classList.remove('show'), 1400); };
+
+  // Make every command in the first column click-to-copy
+  document.querySelectorAll('td:first-child code').forEach(code => {
+    const btn = document.createElement('button');
+    btn.className = 'copy'; btn.type = 'button';
+    btn.title = 'Copy';
+    code.replaceWith(btn); btn.appendChild(code);
+    btn.addEventListener('click', () => {
+      const text = code.textContent;
+      const fallback = () => { const r = document.createRange(); r.selectNodeContents(code); const s = getSelection(); s.removeAllRanges(); s.addRange(r); show('Selected — press Ctrl+C'); };
+      try { navigator.clipboard.writeText(text).then(() => show('Copied: ' + text), fallback); } catch { fallback(); }
+    });
+  });
+
+  // Filter rows and panels
+  const input = document.getElementById('filter');
+  const sections = [...document.querySelectorAll('section')];
+  const count = document.getElementById('count');
+  const empty = document.getElementById('empty');
+  const total = document.querySelectorAll('tr').length;
+  const apply = () => {
+    const q = input.value.trim().toLowerCase();
+    let shown = 0, panels = 0;
+    sections.forEach(sec => {
+      const head = (sec.dataset.tool + ' ' + sec.querySelector('h2').textContent).toLowerCase();
+      const whole = q && head.includes(q);
+      let any = false;
+      sec.querySelectorAll('tr').forEach(tr => {
+        const hit = !q || whole || tr.textContent.toLowerCase().includes(q);
+        tr.hidden = !hit; if (hit) { any = true; shown++; }
+      });
+      sec.querySelectorAll('.note').forEach(n => n.hidden = !!q && !whole && !n.textContent.toLowerCase().includes(q));
+      sec.hidden = !any; if (any) panels++;
+    });
+    count.textContent = q ? `${shown} of ${total} commands` : `${total} commands · ${sections.length} tools`;
+    empty.hidden = panels > 0;
+  };
+  input.addEventListener('input', apply);
+  document.addEventListener('keydown', e => { if (e.key === '/' && document.activeElement !== input) { e.preventDefault(); input.focus(); } });
+  apply();
+})();
+</script>
