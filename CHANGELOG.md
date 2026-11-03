@@ -33,3 +33,9 @@ First version, built and tested on Ubuntu 26.04 with GNOME 50.
   light and dark screenshots in `docs/`.
 - README with table of contents, badges and clone instructions; MIT license,
   `.gitignore` and contributing guide.
+- `CODE_OF_CONDUCT.md` (Contributor Covenant 2.1), with reports going to the maintainer
+  through GitHub.
+- Issue forms for bugs and ideas, and a pull request template with a checklist
+  (`.github/`). Blank issues are turned off.
+- `SECURITY.md` with private reporting through GitHub's private vulnerability reporting,
+  which is now turned on for the repo.
