@@ -4,9 +4,12 @@ Checklist to rebuild my terminal and desktop setup on a fresh Ubuntu install.
 Made on Ubuntu 26.04 / GNOME 50. Run the steps in order, from inside this folder
 (`cd system-setup`), so the `configs/` paths resolve.
 
+**Repo:** https://github.com/omeryelkenci/ubuntu-setup
+
 Backed-up config files in `configs/`:
 - `tools.zsh` — aliases and settings for zoxide, eza, bat, fd, fzf, lazygit
 - `p10k.zsh` — my Powerlevel10k prompt style (from `p10k configure`)
+- `timeshift.json` — Timeshift schedule and excludes (disk and username filled in at setup)
 
 On a new machine, get this folder first:
 ```bash
