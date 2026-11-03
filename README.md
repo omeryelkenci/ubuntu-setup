@@ -26,6 +26,14 @@ git clone https://github.com/omeryelkenci/ubuntu-setup.git ~/Projects/system-set
 cd ~/Projects/system-setup
 ```
 
+## Contents
+
+1. [Terminal](#1-terminal): zsh, Oh My Zsh, plugins, terminal tools, delta, Nord colors
+2. [Desktop (GNOME)](#2-desktop-gnome): shortcuts, extensions, quick settings
+3. [System snapshots (Timeshift)](#3-system-snapshots-timeshift): install, configure, first snapshot
+4. [Home folder backups](#4-home-folder-backups-backups-app--google-drive): Déjà Dup to Google Drive, restoring
+5. [Before reinstalling](#5-before-reinstalling-refresh-the-backups): refresh the config backups
+
 ---
 
 ## 1. Terminal
@@ -213,7 +221,7 @@ Personal files are backed up separately, see below.
 
 ---
 
-## 3b. Home folder backups (Backups app → Google Drive)
+## 4. Home folder backups (Backups app → Google Drive)
 
 - [ ] **Restore my files first** (on a new install): open Backups → **Restore**, sign in to
   Google, enter the encryption password (kept in my password manager), pick the latest backup.
@@ -237,7 +245,7 @@ Personal files are backed up separately, see below.
 
 ---
 
-## 4. Before reinstalling: refresh the backups
+## 5. Before reinstalling: refresh the backups
 
 If I change my prompt or aliases, copy the latest versions here first:
 ```bash
